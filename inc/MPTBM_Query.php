@@ -20,23 +20,12 @@
 					'post_status'    => 'publish'
 				) );
 			}
-			public static function query_transport_list(): WP_Query {
+			public static function query_transport_list($price_based): WP_Query {
 				$args = array(
 					'post_type'      => array( MPTBM_Function::get_cpt_name() ),
 					'posts_per_page' => - 1,
-					'meta_query'     => array(
-						'relation' => 'OR',
-						array(
-							'key'     => 'mptbm_price_based',
-							'value'   => 'distance',
-							'compare' => '='
-						),
-						array(
-							'key'     => 'mptbm_price_based',
-							'value'   => 'duration',
-							'compare' => '='
-						),
-					)
+					'meta_key'       => 'mptbm_price_based',
+					'meta_value'       =>$price_based
 				);
 				return new WP_Query( $args );
 			}

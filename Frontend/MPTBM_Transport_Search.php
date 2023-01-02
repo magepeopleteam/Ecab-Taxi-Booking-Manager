@@ -9,15 +9,17 @@
 	if ( ! class_exists( 'MPTBM_Transport_Search' ) ) {
 		class MPTBM_Transport_Search {
 			public function __construct() {
-				add_action( 'mptbm_transport_search', [ $this, 'transport_search' ] );
+				add_action( 'mptbm_transport_search', [ $this, 'transport_search' ], 10, 1 );
 				add_action( 'wp_ajax_get_mptbm_map_search_result', [ $this, 'get_mptbm_map_search_result' ] );
 				add_action( 'wp_ajax_nopriv_get_mptbm_map_search_result', [ $this, 'get_mptbm_map_search_result' ] );
 			}
-			public function transport_search() {
+			public function transport_search( $params ) {
+				$price_based = $params['price_based'] ?: 'distance';
 				?>
 				<div class="mpStyle">
 					<div class="mpRow">
 						<div class="col_6 mptbm_map_form_area mpForm">
+							<input type="hidden" name="mptbm_price_based" value="<?php echo esc_attr( $price_based ); ?>"/>
 							<label class="fdColumn">
 								<input type="hidden" id="mptbm_map_start_date" value=""/>
 								<span class="fas fa-calendar-alt"><?php esc_html_e( ' Select Date', 'mptbm_plugin' ); ?></span>
@@ -36,7 +38,22 @@
 							</label>
 							<label class="fdColumn">
 								<span class="fas fa-map-marker-alt"><?php esc_html_e( ' Start Location', 'mptbm_plugin' ); ?></span>
-								<input type="text" id="mptbm_map_start_place" class="formControl" placeholder="<?php esc_html_e( ' Enter start Location', 'mptbm_plugin' ); ?>" value=""/>
+								<?php if ( $price_based == 'manual' ) { ?>
+									<?php $all_start_locations=MPTBM_Function::get_manual_start_location(); ?>
+									<select id="mptbm_manual_start_place" class="formControl">
+										<option selected disabled><?php esc_html_e( ' Select start Location', 'mptbm_plugin' ); ?></option>
+										<?php if(sizeof($all_start_locations)>0){
+											foreach ($all_start_locations as $start_location){
+												?>
+												<option value="<?php echo esc_attr($start_location); ?>"><?php echo esc_html($start_location); ?></option>
+												<?php
+											}
+										} ?>
+									</select>
+									<?php //echo '<pre>';print_r();echo '</pre>'; ?>
+								<?php } else { ?>
+									<input type="text" id="mptbm_map_start_place" class="formControl" placeholder="<?php esc_html_e( ' Enter start Location', 'mptbm_plugin' ); ?>" value=""/>
+								<?php } ?>
 							</label>
 							<label class="fdColumn">
 								<span class="fas fa-map-marker-alt"><?php esc_html_e( ' Destination Location', 'mptbm_plugin' ); ?></span>
@@ -62,22 +79,22 @@
 					$end_place   = MPTBM_Function::data_sanitize( $_POST['end_place'] );
 					$start_date  = MPTBM_Function::data_sanitize( $_POST['start_date'] );
 					$start_time  = MPTBM_Function::data_sanitize( $_POST['start_time'] );
+					$price_based = MPTBM_Function::data_sanitize( $_POST['price_based'] );
 					$date        = $start_date . ' ' . $start_time;
-					$all_posts   = MPTBM_Query::query_transport_list();
+					$all_posts   = MPTBM_Query::query_transport_list( $price_based );
 					if ( $all_posts->found_posts > 0 ) {
 						$posts = $all_posts->posts;
-
 						?>
 						<div class="all_filter_item">
 							<div class="flexWrap modern">
 								<?php
 									foreach ( $posts as $post ) {
-										$post_id   = $post->ID;
+										$post_id    = $post->ID;
 										$product_id = MPTBM_Function::get_post_info( $post_id, 'link_wc_product' );
-										$thumbnail = MPTBM_Function::get_image_url( $post_id );
-										$price     = MPTBM_Function::get_price( $post_id, $distance, $duration );
-										$wc_price=MPTBM_Function::wc_price( $post_id, $price );
-										$raw_price=MPTBM_Function::price_convert_raw( $wc_price );
+										$thumbnail  = MPTBM_Function::get_image_url( $post_id );
+										$price      = MPTBM_Function::get_price( $post_id, $distance, $duration );
+										$wc_price   = MPTBM_Function::wc_price( $post_id, $price );
+										$raw_price  = MPTBM_Function::price_convert_raw( $wc_price );
 										?>
 										<div class="filter_item mptbm_booking_item" data-placeholder>
 											<div class="bg_image_area" data-href="<?php echo get_the_permalink( $post_id ); ?>" data-placeholder>
@@ -88,7 +105,7 @@
 												<div class="divider"></div>
 												<p><span class="fas fa-map-marker-alt"></span>&nbsp;&nbsp;<strong><?php esc_html_e( 'Start Location', 'mptbm_plugin' ); ?> : </strong><?php echo esc_html( $start_place ); ?></p>
 												<p><span class="fas fa-map-marker-alt"></span>&nbsp;&nbsp;<strong><?php esc_html_e( 'Destination Location', 'mptbm_plugin' ); ?> : </strong> <?php echo esc_html( $end_place ); ?></p>
-												<h2 class="textTheme" data-main-price="<?php echo esc_attr($raw_price); ?>"> <?php echo MPTBM_Function::esc_html($wc_price); ?></h2>
+												<h2 class="textTheme" data-main-price="<?php echo esc_attr( $raw_price ); ?>"> <?php echo MPTBM_Function::esc_html( $wc_price ); ?></h2>
 												<div class="dLayout_xs bgLight" data-collapse="#mptbm_collape_show_info_<?php echo esc_attr( $post_id ); ?>">
 													<ul class="list_inline_two">
 														<li class="justifyBetween"><h6><?php esc_html_e( 'Engine', 'mptbm_plugin' ); ?> : </h6> <?php echo MPTBM_Function::get_post_info( $post_id, 'mptbm_engine' ); ?></li>
@@ -172,8 +189,8 @@
 																		<td class="textCenter"><?php echo MPTBM_Function::esc_html( $service_price ); ?></td>
 																		<td>
 																			<label class="_allCenter_fRight selectCheckbox">
-																				<input type="hidden" name="mptbm_extra_service[]" value="" />
-																				<input type="checkbox"  data-extra-service-price="<?php echo esc_attr($service_price_raw); ?>" value="<?php echo MPTBM_Function::esc_html( $service_name ); ?>" />
+																				<input type="hidden" name="mptbm_extra_service[]" value=""/>
+																				<input type="checkbox" data-extra-service-price="<?php echo esc_attr( $service_price_raw ); ?>" value="<?php echo MPTBM_Function::esc_html( $service_name ); ?>"/>
 																				<span class="customCheckbox"><?php esc_html_e( 'Select', 'mptbm_plugin' ); ?></span>
 																			</label>
 																		</td>

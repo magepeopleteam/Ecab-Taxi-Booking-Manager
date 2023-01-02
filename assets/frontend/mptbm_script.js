@@ -1,6 +1,5 @@
 let mptbm_map;
-let mptbm_service;
-let infowindow;
+let mptbm_map_window;
 
 function mptbm_set_cookie_distance_duration(start_place = '', end_place = '') {
 	mptbm_map = new google.maps.Map(document.getElementById("mptbm_map_area"), {
@@ -43,7 +42,7 @@ function mptbm_set_cookie_distance_duration(start_place = '', end_place = '') {
 		});
 	} else if (start_place || end_place) {
 		let place = start_place ? start_place : end_place;
-		infowindow = new google.maps.InfoWindow();
+		mptbm_map_window = new google.maps.InfoWindow();
 		map = new google.maps.Map(document.getElementById("mptbm_map_area"), {
 			center: mptbm_lat_lng,
 			zoom: 15,
@@ -62,10 +61,9 @@ function mptbm_set_cookie_distance_duration(start_place = '', end_place = '') {
 			}
 		})
 	} else {
-
 		let directionsRenderer = new google.maps.DirectionsRenderer();
 		directionsRenderer.setMap(mptbm_map);
-		document.getElementById('mptbm_map_start_place').focus();
+		//document.getElementById('mptbm_map_start_place').focus();
 	}
 }
 
@@ -76,32 +74,34 @@ function createMarker(place) {
 		position: place.geometry.location,
 	});
 	google.maps.event.addListener(marker, "click", () => {
-		infowindow.setContent(place.name || "");
-		infowindow.open(map);
+		mptbm_map_window.setContent(place.name || "");
+		mptbm_map_window.open(map);
 	});
 }
 
 (function ($) {
 	"use strict";
 	$(document).ready(function () {
-		if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
-			let start_place = document.getElementById('mptbm_map_start_place');
-			let end_place = document.getElementById('mptbm_map_end_place');
+		if ($('#mptbm_map_area').length > 0) {
 			//start_place.focus();
 			const options = {
 				componentRestrictions: {country: "BD"},
 				fields: ["address_components", "geometry"],
 				types: ["address"],
 			}
-			let start_place_autoload = new google.maps.places.Autocomplete(start_place, options);
-			google.maps.event.addListener(start_place_autoload, 'place_changed', function () {
-				mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
-			});
-			let end_place_autoload = new google.maps.places.Autocomplete(end_place, options);
-			google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
-				mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
-			});
-			mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
+			if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
+				let start_place = document.getElementById('mptbm_map_start_place');
+				let end_place = document.getElementById('mptbm_map_end_place');
+				let start_place_autoload = new google.maps.places.Autocomplete(start_place, options);
+				google.maps.event.addListener(start_place_autoload, 'place_changed', function () {
+					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
+				});
+				let end_place_autoload = new google.maps.places.Autocomplete(end_place, options);
+				google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
+				});
+			} else {
+				mptbm_set_cookie_distance_duration();
+			}
 		}
 	});
 	$(document).on("click", "#mptbm_get_vehicle", function () {
@@ -118,6 +118,7 @@ function createMarker(place) {
 		} else if (!end_place.value) {
 			end_place.focus();
 		} else {
+			let price_based = $('[name="mptbm_price_based"]').val();
 			mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 			let target = $('.mptbm_map_search_result');
 			if (start_place.value && end_place.value && start_date && start_time) {
@@ -129,7 +130,8 @@ function createMarker(place) {
 						"start_place": start_place.value,
 						"end_place": end_place.value,
 						"start_date": start_date.value,
-						"start_time": start_time.value
+						"start_time": start_time.value,
+						"price_based": price_based
 					},
 					beforeSend: function () {
 						dLoader(target);
@@ -144,6 +146,12 @@ function createMarker(place) {
 					}
 				});
 			}
+		}
+	});
+	$(document).on("change", "#mptbm_manual_start_place", function () {
+		let start_place = $(this).val();
+		if (start_place) {
+			mptbm_set_cookie_distance_duration(start_place, '');
 		}
 	});
 	//=======================//
