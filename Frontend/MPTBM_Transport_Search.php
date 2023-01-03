@@ -12,13 +12,15 @@
 				add_action( 'mptbm_transport_search', [ $this, 'transport_search' ], 10, 1 );
 				add_action( 'wp_ajax_get_mptbm_map_search_result', [ $this, 'get_mptbm_map_search_result' ] );
 				add_action( 'wp_ajax_nopriv_get_mptbm_map_search_result', [ $this, 'get_mptbm_map_search_result' ] );
+				add_action( 'wp_ajax_get_mptbm_end_place', [ $this, 'get_mptbm_end_place' ] );
+				add_action( 'wp_ajax_nopriv_get_mptbm_end_place', [ $this, 'get_mptbm_end_place' ] );
 			}
 			public function transport_search( $params ) {
 				$price_based = $params['price_based'] ?: 'distance';
 				?>
-				<div class="mpStyle">
-					<div class="mpRow">
-						<div class="col_6 mptbm_map_form_area mpForm">
+				<div class="mpStyle ">
+					<div class="mpRow mptbm_map_form_area">
+						<div class="col_6  mpForm">
 							<input type="hidden" name="mptbm_price_based" value="<?php echo esc_attr( $price_based ); ?>"/>
 							<label class="fdColumn">
 								<input type="hidden" id="mptbm_map_start_date" value=""/>
@@ -39,25 +41,33 @@
 							<label class="fdColumn">
 								<span class="fas fa-map-marker-alt"><?php esc_html_e( ' Start Location', 'mptbm_plugin' ); ?></span>
 								<?php if ( $price_based == 'manual' ) { ?>
-									<?php $all_start_locations=MPTBM_Function::get_manual_start_location(); ?>
-									<select id="mptbm_manual_start_place" class="formControl">
+									<?php $all_start_locations = MPTBM_Function::get_manual_start_location(); ?>
+									<select id="mptbm_manual_start_place" class="formControl mptbm_map_start_place">
 										<option selected disabled><?php esc_html_e( ' Select start Location', 'mptbm_plugin' ); ?></option>
-										<?php if(sizeof($all_start_locations)>0){
-											foreach ($all_start_locations as $start_location){
+										<?php if ( sizeof( $all_start_locations ) > 0 ) {
+											foreach ( $all_start_locations as $start_location ) {
 												?>
-												<option value="<?php echo esc_attr($start_location); ?>"><?php echo esc_html($start_location); ?></option>
+												<option value="<?php echo esc_attr( $start_location ); ?>"><?php echo esc_html( $start_location ); ?></option>
 												<?php
 											}
 										} ?>
 									</select>
 									<?php //echo '<pre>';print_r();echo '</pre>'; ?>
 								<?php } else { ?>
-									<input type="text" id="mptbm_map_start_place" class="formControl" placeholder="<?php esc_html_e( ' Enter start Location', 'mptbm_plugin' ); ?>" value=""/>
+									<input type="text" id="mptbm_map_start_place" class="formControl mptbm_map_start_place" placeholder="<?php esc_html_e( ' Enter start Location', 'mptbm_plugin' ); ?>" value=""/>
 								<?php } ?>
 							</label>
-							<label class="fdColumn">
+							<?php //echo '<pre>';print_r(MPTBM_Function::get_manual_end_location('DHAKA'));echo '</pre>'; ?>
+							<label class="fdColumn mptbm_manual_end_place">
 								<span class="fas fa-map-marker-alt"><?php esc_html_e( ' Destination Location', 'mptbm_plugin' ); ?></span>
-								<input type="text" id="mptbm_map_end_place" class="formControl" placeholder="<?php esc_html_e( ' Enter end Location', 'mptbm_plugin' ); ?>" value=""/>
+								<?php if ( $price_based == 'manual' ) { ?>
+									<select class="formControl mptbm_map_end_place">
+										<option selected disabled><?php esc_html_e( ' Select Destination Location', 'mptbm_plugin' ); ?></option>
+									</select>
+									<?php //echo '<pre>';print_r();echo '</pre>'; ?>
+								<?php } else { ?>
+									<input type="text" id="mptbm_map_end_place" class="formControl mptbm_map_end_place" placeholder="<?php esc_html_e( ' Enter end Location', 'mptbm_plugin' ); ?>" value=""/>
+								<?php } ?>
 							</label>
 							<div class="divider"></div>
 							<button type="button" class="_themeButton_fullWidth" id="mptbm_get_vehicle"><?php esc_html_e( ' Search vehicle', 'mptbm_plugin' ); ?></button>
@@ -219,6 +229,29 @@
 					}
 					//setcookie( "mptbm_distance", "", time() + 60, "/" );
 					//setcookie( "mptbm_duration", "", time() + 60, "/" );
+				}
+				die();
+			}
+			public function get_mptbm_end_place() {
+				$start_place   = MPTBM_Function::data_sanitize( $_POST['start_place'] );
+				$price_based   = MPTBM_Function::data_sanitize( $_POST['price_based'] );
+				$end_locations = MPTBM_Function::get_manual_end_location( $start_place );
+				if ( sizeof( $end_locations ) > 0 ) {
+					?>
+					<span class="fas fa-map-marker-alt"><?php esc_html_e( ' Destination Location', 'mptbm_plugin' ); ?></span>
+					<select class="formControl mptbm_map_end_place" id="mptbm_manual_end_place">
+						<option selected disabled><?php esc_html_e( ' Select Destination Location', 'mptbm_plugin' ); ?></option>
+						<?php
+							foreach ( $end_locations as $location ) {
+								?>
+								<option value="<?php echo esc_attr( $location ); ?>"><?php echo esc_html( $location ); ?></option>
+								<?php
+							}
+						?>
+					</select>
+					<?php
+				} else {
+					?><span class="fas fa-map-marker-alt"><?php esc_html_e( ' Can not find any Destination Location', 'mptbm_plugin' ); ?></span><?php
 				}
 				die();
 			}

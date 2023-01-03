@@ -51,6 +51,11 @@
 							let mptbm_empty_image_url = "<?php echo esc_attr( MPTBM_PLUGIN_URL . '/assets/helper/images/no_image.png' ); ?>";
 							let mptbm_date_format = "<?php echo esc_attr( MPTBM_Function::get_general_settings( 'date_format', 'D d M , yy' ) ); ?>";
 							let mptbm_lat_lng = {lat: 23.81234828905659, lng: 90.41069652669002};
+							const mptbm_map_options = {
+								componentRestrictions: {country: "BD"},
+								fields: ["address_components", "geometry"],
+								types: ["address"],
+							}
 				</script>
 				<?php
 			}

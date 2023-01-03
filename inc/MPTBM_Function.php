@@ -248,6 +248,27 @@
 				}
 				return array_unique($all_location);
 			}
+			public static function get_manual_end_location($start_place){
+				$all_location=[];
+				$all_posts   = MPTBM_Query::query_transport_list( 'manual' );
+				if ( $all_posts->found_posts > 0 ) {
+					$posts = $all_posts->posts;
+					foreach ( $posts as $post ) {
+						$post_id    = $post->ID;
+						$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+						if(sizeof($manual_prices)>0){
+							foreach ( $manual_prices as $manual_price ) {
+								$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+								$end_location = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
+								if($start_location && $end_location && $start_location==$start_place){
+									$all_location[]=	$end_location;
+								}
+							}
+						}
+					}
+				}
+				return array_unique($all_location);
+			}
 			//*******************************//
 			public static function get_faq( $tour_id ) {
 				return self::get_post_info( $tour_id, 'mptbm_faq', array() );

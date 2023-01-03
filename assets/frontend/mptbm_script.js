@@ -83,20 +83,15 @@ function createMarker(place) {
 	"use strict";
 	$(document).ready(function () {
 		if ($('#mptbm_map_area').length > 0) {
-			//start_place.focus();
-			const options = {
-				componentRestrictions: {country: "BD"},
-				fields: ["address_components", "geometry"],
-				types: ["address"],
-			}
+			let parent=$('.mptbm_map_form_area');
 			if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
 				let start_place = document.getElementById('mptbm_map_start_place');
 				let end_place = document.getElementById('mptbm_map_end_place');
-				let start_place_autoload = new google.maps.places.Autocomplete(start_place, options);
+				let start_place_autoload = new google.maps.places.Autocomplete(start_place, mptbm_map_options);
 				google.maps.event.addListener(start_place_autoload, 'place_changed', function () {
 					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 				});
-				let end_place_autoload = new google.maps.places.Autocomplete(end_place, options);
+				let end_place_autoload = new google.maps.places.Autocomplete(end_place, mptbm_map_options);
 				google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
 				});
 			} else {
@@ -150,6 +145,35 @@ function createMarker(place) {
 	});
 	$(document).on("change", "#mptbm_manual_start_place", function () {
 		let start_place = $(this).val();
+		let target = $('.mptbm_manual_end_place');
+		if (start_place) {
+			mptbm_set_cookie_distance_duration(start_place, '');
+			let price_based = $('[name="mptbm_price_based"]').val();
+			$.ajax({
+				type: 'POST',
+				url: mptbm_ajax_url,
+				data: {
+					"action": "get_mptbm_end_place",
+					"start_place": start_place,
+					"price_based": price_based
+				},
+				beforeSend: function () {
+					dLoader(target);
+				},
+				success: function (data) {
+					target.html(data).promise().done(function () {
+						loadBgImage();
+					});
+				},
+				error: function (response) {
+					console.log(response);
+				}
+			});
+		}
+	});
+	$(document).on("change", "#mptbm_manual_end_place", function () {
+		let start_place = $(this).val();
+		let target = $('.mptbm_manual_end_place');
 		if (start_place) {
 			mptbm_set_cookie_distance_duration(start_place, '');
 		}
@@ -170,5 +194,3 @@ function createMarker(place) {
 		});
 	});
 }(jQuery));
-
-
