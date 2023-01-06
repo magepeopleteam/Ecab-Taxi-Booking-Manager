@@ -127,14 +127,24 @@
 				return $format == 'D M d , yy' ? 'D M  j, Y' : $date_format;
 			}
 			//*************Price*********************************//
-			public static function get_price( $post_id, $distance = 1000, $duration = 3600 ): string {
+			public static function get_price( $post_id, $distance = 1000, $duration = 3600,$start_place='',$destination_place='' ): string {
+				$price = '';
 				$price_based = MPTBM_Function::get_post_info( $post_id, 'mptbm_price_based' );
 				if ( $price_based == 'distance' ) {
 					$price = MPTBM_Function::get_post_info( $post_id, 'mptbm_km_price' ) * $distance / 1000;
 				} elseif ( $price_based == 'duration' ) {
 					$price = MPTBM_Function::get_post_info( $post_id, 'mptbm_hour_price' ) * $duration / 3600;
 				} else {
-					$price = '';
+					$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					if ( sizeof( $manual_prices ) > 0 ) {
+						foreach ( $manual_prices as $manual_price ) {
+							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+							$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
+							if($start_place==$start_location && $destination_place==$end_location){
+								$price          = array_key_exists( 'price', $manual_price ) ? $manual_price['price'] : '';
+							}
+						}
+					}
 				}
 				return $price;
 			}

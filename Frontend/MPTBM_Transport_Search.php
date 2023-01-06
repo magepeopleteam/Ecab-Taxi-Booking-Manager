@@ -102,7 +102,7 @@
 										$post_id    = $post->ID;
 										$product_id = MPTBM_Function::get_post_info( $post_id, 'link_wc_product' );
 										$thumbnail  = MPTBM_Function::get_image_url( $post_id );
-										$price      = MPTBM_Function::get_price( $post_id, $distance, $duration );
+										$price      = MPTBM_Function::get_price( $post_id, $distance, $duration ,$start_place,$end_place);
 										$wc_price   = MPTBM_Function::wc_price( $post_id, $price );
 										$raw_price  = MPTBM_Function::price_convert_raw( $wc_price );
 										?>

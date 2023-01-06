@@ -325,7 +325,9 @@
 			public function get_cart_total_price( $post_id ) {
 				$distance     = $_COOKIE['mptbm_distance'] ?? '';
 				$duration     = $_COOKIE['mptbm_duration'] ?? '';
-				$price        = MPTBM_Function::get_price( $post_id, $distance, $duration );
+				$start_place=MPTBM_Function::get_submit_info( 'mptbm_start_place' );
+				$end_place=MPTBM_Function::get_submit_info( 'mptbm_end_place' );
+				$price        = MPTBM_Function::get_price( $post_id, $distance, $duration,$start_place,$end_place );
 				$wc_price     = MPTBM_Function::wc_price( $post_id, $price );
 				$raw_price    = MPTBM_Function::price_convert_raw( $wc_price );
 				$service_name = MPTBM_Function::get_submit_info( 'mptbm_extra_service', array() );

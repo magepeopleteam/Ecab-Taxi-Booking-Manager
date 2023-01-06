@@ -100,14 +100,22 @@ function createMarker(place) {
 		}
 	});
 	$(document).on("click", "#mptbm_get_vehicle", function () {
-		let start_date = document.getElementById('mptbm_map_start_date');
-		let start_time = document.getElementById('mptbm_map_start_time');
-		let start_place = document.getElementById('mptbm_map_start_place');
-		let end_place = document.getElementById('mptbm_map_end_place');
-		if (!start_date.value) {
-			start_date.focus();
-		} else if (!start_time.value) {
-			start_time.focus();
+		let start_date = $('#mptbm_map_start_date').val();
+		let start_time = $('#mptbm_map_start_time').val();
+		let start_place;
+		let end_place
+		if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
+			start_place = document.getElementById('mptbm_map_start_place');
+			end_place = document.getElementById('mptbm_map_end_place');
+		}else{
+			start_place = document.getElementById('mptbm_manual_start_place');
+			end_place = document.getElementById('mptbm_manual_end_place');
+		}
+
+		if (!start_date) {
+			$('#mptbm_map_start_date').trigger('click');
+		} else if (!start_time) {
+			$('#mptbm_map_start_time').trigger('click');
 		} else if (!start_place.value) {
 			start_place.focus();
 		} else if (!end_place.value) {
@@ -124,8 +132,8 @@ function createMarker(place) {
 						"action": "get_mptbm_map_search_result",
 						"start_place": start_place.value,
 						"end_place": end_place.value,
-						"start_date": start_date.value,
-						"start_time": start_time.value,
+						"start_date": start_date,
+						"start_time": start_time,
 						"price_based": price_based
 					},
 					beforeSend: function () {
@@ -158,11 +166,11 @@ function createMarker(place) {
 					"price_based": price_based
 				},
 				beforeSend: function () {
-					dLoader(target);
+					dLoader(target.closest('.mpForm'));
 				},
 				success: function (data) {
 					target.html(data).promise().done(function () {
-						loadBgImage();
+						dLoaderRemove(target.closest('.mpForm'));
 					});
 				},
 				error: function (response) {
@@ -172,10 +180,10 @@ function createMarker(place) {
 		}
 	});
 	$(document).on("change", "#mptbm_manual_end_place", function () {
-		let start_place = $(this).val();
-		let target = $('.mptbm_manual_end_place');
-		if (start_place) {
-			mptbm_set_cookie_distance_duration(start_place, '');
+		let start_place = $("#mptbm_manual_start_place").val();
+		let end_place = $(this).val();
+		if (end_place) {
+			mptbm_set_cookie_distance_duration(start_place, end_place);
 		}
 	});
 	//=======================//
