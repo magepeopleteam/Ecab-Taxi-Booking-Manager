@@ -19,7 +19,7 @@
 				$price_based = $params['price_based'] ?: 'distance';
 				?>
 				<div class="mpStyle ">
-					<div class="mpRow mptbm_map_form_area">
+					<div class="mpRow mptbm_map_form_area dLayout_xs">
 						<div class="col_6  mpForm">
 							<input type="hidden" name="mptbm_price_based" value="<?php echo esc_attr( $price_based ); ?>"/>
 							<label class="fdColumn">
@@ -100,6 +100,8 @@
 								<?php
 									foreach ( $posts as $post ) {
 										$post_id    = $post->ID;
+										$location_exit=MPTBM_Function::location_exit($post_id,$start_place,$end_place);
+										if($location_exit){
 										$product_id = MPTBM_Function::get_post_info( $post_id, 'link_wc_product' );
 										$thumbnail  = MPTBM_Function::get_image_url( $post_id );
 										$price      = MPTBM_Function::get_price( $post_id, $distance, $duration ,$start_place,$end_place);
@@ -221,6 +223,7 @@
 											</div>
 										</div>
 										<?php
+										}
 									}
 								?>
 							</div>

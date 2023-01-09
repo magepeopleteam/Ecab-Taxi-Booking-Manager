@@ -237,7 +237,26 @@
 				}
 				return wp_get_attachment_image_url( $image_id, $size );
 			}
-			//*******************************//
+			//************Location*******************//
+			public static function location_exit($post_id,$start_place,$destination_place){
+				$price_based = MPTBM_Function::get_post_info( $post_id, 'mptbm_price_based' );
+				if ( $price_based == 'manual' ) {
+					$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					if ( sizeof( $manual_prices ) > 0 ) {
+						$exit=0;
+						foreach ( $manual_prices as $manual_price ) {
+							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+							$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
+							if($start_place==$start_location && $destination_place==$end_location){
+								$exit=1;
+							}
+						}
+						return $exit > 0;
+					}
+					return false;
+				}
+				return true;
+			}
 			public static function get_manual_start_location(){
 				$all_location=[];
 				$all_posts   = MPTBM_Query::query_transport_list( 'manual' );
