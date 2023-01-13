@@ -93,6 +93,7 @@ function createMarker(place) {
 				});
 				let end_place_autoload = new google.maps.places.Autocomplete(end_place, mptbm_map_options);
 				google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
+					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 				});
 			} else {
 				mptbm_set_cookie_distance_duration();
@@ -122,6 +123,7 @@ function createMarker(place) {
 			end_place.focus();
 		} else {
 			let price_based = $('[name="mptbm_price_based"]').val();
+			let post_id = $('[name="mptbm_filter_post_id"]').val();
 			mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 			let target = $('.mptbm_map_search_result');
 			if (start_place.value && end_place.value && start_date && start_time) {
@@ -134,7 +136,8 @@ function createMarker(place) {
 						"end_place": end_place.value,
 						"start_date": start_date,
 						"start_time": start_time,
-						"price_based": price_based
+						"price_based": price_based,
+						"post_id": post_id
 					},
 					beforeSend: function () {
 						dLoader(target);
@@ -155,28 +158,40 @@ function createMarker(place) {
 		let start_place = $(this).val();
 		let target = $('.mptbm_manual_end_place');
 		if (start_place) {
-			mptbm_set_cookie_distance_duration(start_place, '');
+			let end_place='';
 			let price_based = $('[name="mptbm_price_based"]').val();
-			$.ajax({
-				type: 'POST',
-				url: mptbm_ajax_url,
-				data: {
-					"action": "get_mptbm_end_place",
-					"start_place": start_place,
-					"price_based": price_based
-				},
-				beforeSend: function () {
-					dLoader(target.closest('.mpForm'));
-				},
-				success: function (data) {
-					target.html(data).promise().done(function () {
-						dLoaderRemove(target.closest('.mpForm'));
-					});
-				},
-				error: function (response) {
-					console.log(response);
-				}
-			});
+			if(price_based==='manual') {
+				let post_id = $('[name="mptbm_filter_post_id"]').val();
+				$.ajax({
+					type: 'POST',
+					url: mptbm_ajax_url,
+					data: {
+						"action": "get_mptbm_end_place",
+						"start_place": start_place,
+						"price_based": price_based,
+						"post_id": post_id,
+					},
+					beforeSend: function () {
+						dLoader(target.closest('.mpForm'));
+					},
+					success: function (data) {
+						target.html(data).promise().done(function () {
+							dLoaderRemove(target.closest('.mpForm'));
+						});
+					},
+					error: function (response) {
+						console.log(response);
+					}
+				}).promise().done(function () {
+					{
+						end_place = $("#mptbm_manual_start_place").val();
+						mptbm_set_cookie_distance_duration(start_place,end_place);
+					}
+				});
+			}else{
+				end_place = $("#mptbm_manual_start_place").val();
+				mptbm_set_cookie_distance_duration(start_place,end_place);
+			}
 		}
 	});
 	$(document).on("change", "#mptbm_manual_end_place", function () {

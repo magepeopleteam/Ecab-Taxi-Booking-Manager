@@ -33,10 +33,8 @@
 				wp_enqueue_style( 'mptbm_font_awesome', '//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css', array(), '5.15.4' );
 				wp_enqueue_script( 'mptbm_map', 'https://maps.googleapis.com/maps/api/js?libraries=places&amp;language=en&amp;key=AIzaSyD61CGRsenVDXkRMrBzxQnVTtL7EZz0k_c', array( 'jquery' ), time(), true );
 				wp_enqueue_style( 'mptbm-jquery-ui-style', MPTBM_PLUGIN_URL . '/assets/helper/css/jquery-ui.css' );
-				//wp_enqueue_style( 'mptbm_date_range_picker', MPTBM_PLUGIN_URL . '/assets/date_range_picker/date_range_picker.min.css', array(), '1' );
-				//wp_enqueue_script( 'mptbm_date_range_picker', MPTBM_PLUGIN_URL . '/assets/date_range_picker/date_range_picker.js', array( 'jquery', 'moment' ), '1', true );
 				wp_enqueue_style( 'mp_plugin_global', MPTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_style.css', array(), time() );
-				wp_enqueue_script( 'mp_plugin_global', MPTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_script.js', array( 'jquery' ), time(), true );
+				wp_enqueue_script( 'mp_plugin_global', MPTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_script.js', array(), time(), true );
 				do_action( 'mptbm_global_enqueue' );
 			}
 			public function js_constant() {

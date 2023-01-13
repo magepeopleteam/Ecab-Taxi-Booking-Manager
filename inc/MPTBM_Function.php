@@ -51,8 +51,8 @@
 			}
 			//***********Template********************//
 			public static function all_details_template() {
-				$template_path = get_stylesheet_directory() . '/ttbm_templates/themes/';
-				$default_path  = TTBM_PLUGIN_DIR . '/templates/themes/';
+				$template_path = get_stylesheet_directory() . '/mptbm_templates/themes/';
+				$default_path  = MPTBM_PLUGIN_DIR . '/templates/themes/';
 				$dir           = is_dir( $template_path ) ? glob( $template_path . "*" ) : glob( $default_path . "*" );
 				$names         = array();
 				foreach ( $dir as $filename ) {
@@ -66,24 +66,24 @@
 				foreach ( $names as $key => $value ) {
 					$name[ $key ] = $value;
 				}
-				return apply_filters( 'ttbm_template_list_arr', $name );
+				return apply_filters( 'mptbm_template_list_arr', $name );
 			}
 			public static function details_template_path(): string {
 				$tour_id       = get_the_id();
-				$template_name = self::get_post_info( $tour_id, 'ttbm_theme_file', 'default.php' );
+				$template_name = self::get_post_info( $tour_id, 'mptbm_theme_file', 'default.php' );
 				$file_name     = 'themes/' . $template_name;
-				$dir           = TTBM_PLUGIN_DIR . '/templates/' . $file_name;
+				$dir           = MPTBM_PLUGIN_DIR . '/templates/' . $file_name;
 				if ( ! file_exists( $dir ) ) {
 					$file_name = 'themes/default.php';
 				}
 				return self::template_path( $file_name );
 			}
 			public static function template_path( $file_name ): string {
-				$template_path = get_stylesheet_directory() . '/ttbm_templates/';
-				$default_dir   = TTBM_PLUGIN_DIR . '/templates/';
+				$template_path = get_stylesheet_directory() . '/mptbm_templates/';
+				$default_dir   = MPTBM_PLUGIN_DIR . '/templates/';
 				$dir           = is_dir( $template_path ) ? $template_path : $default_dir;
 				$file_path     = $dir . $file_name;
-				return locate_template( array( 'ttbm_templates/' . $file_name ) ) ? $file_path : $default_dir . $file_name;
+				return locate_template( array( 'mptbm_templates/' . $file_name ) ) ? $file_path : $default_dir . $file_name;
 			}
 			//*********Date and Time**********************//
 			public static function datetime_format( $date, $type = 'date-time-text' ) {
@@ -127,21 +127,21 @@
 				return $format == 'D M d , yy' ? 'D M  j, Y' : $date_format;
 			}
 			//*************Price*********************************//
-			public static function get_price( $post_id, $distance = 1000, $duration = 3600,$start_place='',$destination_place='' ): string {
-				$price = '';
+			public static function get_price( $post_id, $distance = 1000, $duration = 3600, $start_place = '', $destination_place = '' ): string {
+				$price       = '';
 				$price_based = MPTBM_Function::get_post_info( $post_id, 'mptbm_price_based' );
 				if ( $price_based == 'distance' ) {
 					$price = MPTBM_Function::get_post_info( $post_id, 'mptbm_km_price' ) * $distance / 1000;
 				} elseif ( $price_based == 'duration' ) {
 					$price = MPTBM_Function::get_post_info( $post_id, 'mptbm_hour_price' ) * $duration / 3600;
 				} else {
-					$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
 					if ( sizeof( $manual_prices ) > 0 ) {
 						foreach ( $manual_prices as $manual_price ) {
 							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
 							$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
-							if($start_place==$start_location && $destination_place==$end_location){
-								$price          = array_key_exists( 'price', $manual_price ) ? $manual_price['price'] : '';
+							if ( $start_place == $start_location && $destination_place == $end_location ) {
+								$price = array_key_exists( 'price', $manual_price ) ? $manual_price['price'] : '';
 							}
 						}
 					}
@@ -228,7 +228,6 @@
 				$display_suffix = get_option( 'woocommerce_price_display_suffix' ) ? get_option( 'woocommerce_price_display_suffix' ) : '';
 				return wc_price( $return_price ) . ' ' . $display_suffix;
 			}
-
 			//*******************************//
 			public static function get_image_url( $post_id = '', $image_id = '', $size = 'full' ) {
 				if ( $post_id ) {
@@ -238,17 +237,17 @@
 				return wp_get_attachment_image_url( $image_id, $size );
 			}
 			//************Location*******************//
-			public static function location_exit($post_id,$start_place,$destination_place){
+			public static function location_exit( $post_id, $start_place, $destination_place ) {
 				$price_based = MPTBM_Function::get_post_info( $post_id, 'mptbm_price_based' );
 				if ( $price_based == 'manual' ) {
-					$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
 					if ( sizeof( $manual_prices ) > 0 ) {
-						$exit=0;
+						$exit = 0;
 						foreach ( $manual_prices as $manual_price ) {
 							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
 							$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
-							if($start_place==$start_location && $destination_place==$end_location){
-								$exit=1;
+							if ( $start_place == $start_location && $destination_place == $end_location ) {
+								$exit = 1;
 							}
 						}
 						return $exit > 0;
@@ -257,46 +256,84 @@
 				}
 				return true;
 			}
-			public static function get_manual_start_location(){
-				$all_location=[];
-				$all_posts   = MPTBM_Query::query_transport_list( 'manual' );
-				if ( $all_posts->found_posts > 0 ) {
-					$posts = $all_posts->posts;
-					foreach ( $posts as $post ) {
-						$post_id    = $post->ID;
-						$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
-						if(sizeof($manual_prices)>0){
-							foreach ( $manual_prices as $manual_price ) {
-								$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
-								if($start_location){
-									$all_location[]=	$start_location;
+			public static function get_manual_start_location( $post_id = '' ) {
+				$all_location = [];
+				if ( $post_id && $post_id > 0 ) {
+					$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					if ( sizeof( $manual_prices ) > 0 ) {
+						foreach ( $manual_prices as $manual_price ) {
+							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+							if ( $start_location ) {
+								$all_location[] = $start_location;
+							}
+						}
+					}
+				} else {
+					$all_posts = MPTBM_Query::query_transport_list( 'manual' );
+					if ( $all_posts->found_posts > 0 ) {
+						$posts = $all_posts->posts;
+						foreach ( $posts as $post ) {
+							$post_id       = $post->ID;
+							$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+							if ( sizeof( $manual_prices ) > 0 ) {
+								foreach ( $manual_prices as $manual_price ) {
+									$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+									if ( $start_location ) {
+										$all_location[] = $start_location;
+									}
 								}
 							}
 						}
 					}
 				}
-				return array_unique($all_location);
+				return array_unique( $all_location );
 			}
-			public static function get_manual_end_location($start_place){
-				$all_location=[];
-				$all_posts   = MPTBM_Query::query_transport_list( 'manual' );
-				if ( $all_posts->found_posts > 0 ) {
-					$posts = $all_posts->posts;
-					foreach ( $posts as $post ) {
-						$post_id    = $post->ID;
-						$manual_prices  = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
-						if(sizeof($manual_prices)>0){
-							foreach ( $manual_prices as $manual_price ) {
-								$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
-								$end_location = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
-								if($start_location && $end_location && $start_location==$start_place){
-									$all_location[]=	$end_location;
+			public static function get_manual_end_location( $start_place, $post_id = '' ) {
+				$all_location = [];
+				if ( $post_id && $post_id > 0 ) {
+					$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+					if ( sizeof( $manual_prices ) > 0 ) {
+						foreach ( $manual_prices as $manual_price ) {
+							$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+							$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
+							if ( $start_location && $end_location && $start_location == $start_place ) {
+								$all_location[] = $end_location;
+							}
+						}
+					}
+				} else {
+					$all_posts = MPTBM_Query::query_transport_list( 'manual' );
+					if ( $all_posts->found_posts > 0 ) {
+						$posts = $all_posts->posts;
+						foreach ( $posts as $post ) {
+							$post_id       = $post->ID;
+							$manual_prices = MPTBM_Function::get_post_info( $post_id, 'mptbm_manual_price_info', [] );
+							if ( sizeof( $manual_prices ) > 0 ) {
+								foreach ( $manual_prices as $manual_price ) {
+									$start_location = array_key_exists( 'start_location', $manual_price ) ? $manual_price['start_location'] : '';
+									$end_location   = array_key_exists( 'end_location', $manual_price ) ? $manual_price['end_location'] : '';
+									if ( $start_location && $end_location && $start_location == $start_place ) {
+										$all_location[] = $end_location;
+									}
 								}
 							}
 						}
 					}
 				}
-				return array_unique($all_location);
+				return array_unique( $all_location );
+			}
+			//*******************************//
+			public static function array_to_string( $array ) {
+				$ids = '';
+				if ( sizeof( $array ) > 0 ) {
+					foreach ( $array as $data ) {
+						if ( $data ) {
+							$ids = $ids ? $ids . ',' . $data : $data;
+						}
+					}
+				}
+				return $ids;
 			}
 			//*******************************//
 			public static function get_faq( $tour_id ) {

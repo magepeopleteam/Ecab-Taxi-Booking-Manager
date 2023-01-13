@@ -588,12 +588,15 @@
 		margin-bottom: var(--default-mp-xs);
 	}
 	/***********info***********/
-	div[class*='mage_info'] {
+	.mpStyle .infoLayout, .mpStyle [class*="_infoLayout"] {
 		padding: var(--default-mp);
 		background-color: var(--info-bg);
-		margin: var(--default-mp) 0 0 0;
+		margin-bottom: var(--default-mp);
 	}
-	div[class*='mage_info'] p {margin: 10px 0 0 0;}
+	.mpStyle .infoLayout_xs, .mpStyle [class*="_infoLayout_xs"] {
+		padding: var(--default-mp-xs);
+		margin-bottom: var(--default-mp-xs);
+	}
 }
 /******************************************************************** Icon Section************************************************/
 @media only screen and (min-width: 10px) {
@@ -768,9 +771,9 @@
 		color: var(--theme-alternate-color);
 		text-align: center; position: relative;
 	}
-	div.mpStyle  div.groupContent > * {border-left: 1px solid var(--border_color);margin: 0;}
-	div.mpStyle  div.groupContent > *:first-child {border: none;}
-	div.mpStyle  div.groupContent .formControl { text-align: center;border: none; background-color: var(--default-bg); height: 100%; border-radius: 0; padding: 0; }
+	div.mpStyle div.groupContent > * {border-left: 1px solid var(--border_color);margin: 0;}
+	div.mpStyle div.groupContent > *:first-child {border: none;}
+	div.mpStyle div.groupContent .formControl { text-align: center;border: none; background-color: var(--default-bg); height: 100%; border-radius: 0; padding: 0; }
 	.mpStyle .groupContent textarea.formControl {text-align: left;}
 	.mpStyle .groupContent input[type="radio"] {}
 	.mpStyle .groupContent input[type="radio"]::after {
@@ -790,18 +793,18 @@
 	/*****/
 	.mpStyle .qtyIncDec {max-width: 100px;}
 	/*******************/
-	div.mpStyle  .selectCheckbox {min-width: 150px;padding: var(--default-mp-xs);width: auto;border: 1px solid var(--border_color);cursor: pointer;}
-	div.mpStyle  .selectCheckbox input[type='checkbox']{display: none;}
-	div.mpStyle  .selectCheckbox .customCheckbox::before{border: none;background-color: transparent;}
+	div.mpStyle .selectCheckbox {min-width: 150px;padding: var(--default-mp-xs);width: auto;border: 1px solid var(--border_color);cursor: pointer;}
+	div.mpStyle .selectCheckbox input[type='checkbox'] {display: none;}
+	div.mpStyle .selectCheckbox .customCheckbox::before {border: none;background-color: transparent;}
 	/*div.mpStyle  .selectCheckbox  input:checked ~ .customCheckbox::before {background: var(--default-color);}*/
-	div.mpStyle  .selectCheckbox  input:focus ~ .customCheckbox::before {outline: 0;-webkit-box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.3); box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.3);}
-	div.mpStyle  .selectCheckbox  input:checked ~ .customCheckbox::after {
+	div.mpStyle .selectCheckbox input:focus ~ .customCheckbox::before {outline: 0;-webkit-box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.3); box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.3);}
+	div.mpStyle .selectCheckbox input:checked ~ .customCheckbox::after {
 		content: "";position: absolute; left: 2px;top: 4px;height: 8px;width: 16px;
 		border: 2px solid var(--theme-alternate-color);border-top: none;border-right: none;
 		z-index: 11;background-color: transparent;
 		-ms-transform: rotate(-45deg);transform: rotate(-45deg);
 	}
-	div.mpStyle .active_select{background-color: var(--theme-color);color:var(--theme-alternate-color);}
+	div.mpStyle .active_select {background-color: var(--theme-color);color: var(--theme-alternate-color);}
 	/**********Responsive*********/
 	@media only screen and (max-width: 1250px) {
 		.mpStyle .inputInline .inputList {max-width: calc(25% - 10px);}
@@ -1062,6 +1065,10 @@
 	.mpStyle .rightSidebar {width: 100%;max-width: var(--right-sidebar-width);}
 	.mpStyle .mainSection {width: 100%;max-width: var(--main-content-width);margin: 0 0 0 var(--default-mp);}
 	/*******Grid*******************************/
+	body.theme-astra div.mpContainer,
+	body.theme-twentytwenty div.mpContainer,
+	body.theme-twentytwentyone div.mpContainer,
+	body.theme-twentytwentytwo div.mpContainer,
 	div.mpContainer {max-width: var(--container-max-width);width: 100%;margin: 0 auto;}
 	div.mpRow {min-height: 1px;}
 	/****/

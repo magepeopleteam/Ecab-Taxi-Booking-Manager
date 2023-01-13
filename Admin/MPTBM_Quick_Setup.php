@@ -14,6 +14,8 @@
 				add_action( 'mptbm_quick_setup_content_done', array( $this, 'setup_content_done' ) );
 			}
 			public function add_admin_scripts() {
+				wp_enqueue_style( 'mp_plugin_global', MPTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_style.css', array(), time() );
+				wp_enqueue_script( 'mp_plugin_global', MPTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_script.js', array( 'jquery' ), time(), true );
 				wp_enqueue_script( 'mp_admin_settings', MPTBM_PLUGIN_URL . '/assets/admin/mp_admin_settings.js', array( 'jquery' ), time(), true );
 				wp_enqueue_style( 'mp_admin_settings', MPTBM_PLUGIN_URL . '/assets/admin/mp_admin_settings.css', array(), time() );
 				wp_enqueue_script( 'mptbm_admin', MPTBM_PLUGIN_URL . '/assets/admin/mptbm_admin.js', array( 'jquery' ), time(), true );

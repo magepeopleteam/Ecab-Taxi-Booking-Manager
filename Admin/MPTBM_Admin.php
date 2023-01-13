@@ -7,9 +7,11 @@
 			public function __construct() {
 				$this->load_file();
 				add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue' ), 90 );
+				add_action( 'init', [ $this, 'add_taxonomy' ] );
 			}
 			private function load_file(): void {
 				require_once MPTBM_PLUGIN_DIR . '/Admin/MAGE_Setting_API.php';
+				require_once MPTBM_PLUGIN_DIR . '/Admin/MPTBM_Dummy_Import.php';
 				require_once MPTBM_PLUGIN_DIR . '/Admin/MPTBM_Settings_Global.php';
 				require_once MPTBM_PLUGIN_DIR . '/Admin/MPTBM_Hidden_Product.php';
 				require_once MPTBM_PLUGIN_DIR . '/Admin/MPTBM_CPT.php';
@@ -37,6 +39,9 @@
 				wp_enqueue_script( 'mptbm_admin', MPTBM_PLUGIN_URL . '/assets/admin/mptbm_admin.js', array( 'jquery' ), time(), true );
 				wp_enqueue_style( 'mptbm_admin', MPTBM_PLUGIN_URL . '/assets/admin/mptbm_admin.css', array(), time() );
 				do_action( 'ttbm_admin_script' );
+			}
+			public function add_taxonomy(){
+				new MPTBM_Dummy_Import();
 			}
 		}
 		new MPTBM_Admin();
