@@ -83,7 +83,7 @@ function createMarker(place) {
 	"use strict";
 	$(document).ready(function () {
 		if ($('#mptbm_map_area').length > 0) {
-			let parent=$('.mptbm_map_form_area');
+			mptbm_set_cookie_distance_duration();
 			if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
 				let start_place = document.getElementById('mptbm_map_start_place');
 				let end_place = document.getElementById('mptbm_map_end_place');
@@ -95,8 +95,6 @@ function createMarker(place) {
 				google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
 					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 				});
-			} else {
-				mptbm_set_cookie_distance_duration();
 			}
 		}
 	});
