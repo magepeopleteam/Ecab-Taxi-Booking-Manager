@@ -66,7 +66,7 @@
 				foreach ( $names as $key => $value ) {
 					$name[ $key ] = $value;
 				}
-				return apply_filters( 'mptbm_template_list_arr', $name );
+				return apply_filters( 'filter_mptbm_details_template', $name );
 			}
 			public static function details_template_path(): string {
 				$tour_id       = get_the_id();

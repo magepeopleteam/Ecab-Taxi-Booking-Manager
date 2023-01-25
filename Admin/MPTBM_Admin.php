@@ -38,7 +38,7 @@
 				wp_enqueue_style( 'mp_admin_settings', MPTBM_PLUGIN_URL . '/assets/admin/mp_admin_settings.css', array(), time() );
 				wp_enqueue_script( 'mptbm_admin', MPTBM_PLUGIN_URL . '/assets/admin/mptbm_admin.js', array( 'jquery' ), time(), true );
 				wp_enqueue_style( 'mptbm_admin', MPTBM_PLUGIN_URL . '/assets/admin/mptbm_admin.css', array(), time() );
-				do_action( 'ttbm_admin_script' );
+				do_action( 'mptbm_admin_script' );
 			}
 			public function add_taxonomy(){
 				new MPTBM_Dummy_Import();

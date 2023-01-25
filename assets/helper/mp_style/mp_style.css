@@ -1079,6 +1079,7 @@
 	.mpStyle .h_200px {height: 200px;}
 	.mpStyle .w_50 {width: 50px;}
 	.mpStyle .w_100, .mpStyle [class*="_w_100"] {width: 100px;min-width: 100px;max-width: 100px;}
+	.mpStyle .w_125 {width: 125px;}
 	.mpStyle .w_150 {width: 150px;}
 	.mpStyle .w_200 {width: 200px;}
 	.mpStyle .w_300 {width: 300px;}

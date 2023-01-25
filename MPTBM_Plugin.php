@@ -27,12 +27,11 @@
 				if ( ! defined( 'MPTBM_PLUGIN_URL' ) ) {
 					define( 'MPTBM_PLUGIN_URL', plugins_url() . '/' . plugin_basename( dirname( __FILE__ ) ) );
 				}
-				if ( self::check_woocommerce()==1 ) {
+				if ( self::check_woocommerce() == 1 ) {
 					add_action( 'activated_plugin', array( $this, 'activation_redirect' ), 90, 1 );
 					register_activation_hook( __FILE__, array( $this, 'on_activation_page_create' ) );
 					require_once MPTBM_PLUGIN_DIR . '/inc/MPTBM_Dependencies.php';
-				}
-				else {
+				} else {
 					require_once MPTBM_PLUGIN_DIR . '/Admin/MPTBM_Quick_Setup.php';
 					add_action( 'activated_plugin', array( $this, 'activation_redirect_setup' ), 90, 1 );
 				}

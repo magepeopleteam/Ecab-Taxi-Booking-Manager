@@ -40,7 +40,7 @@
 				wp_enqueue_script( 'mptbm_script', MPTBM_PLUGIN_URL . '/assets/frontend/mptbm_script.js', array( 'jquery' ), time(), true );
 				wp_enqueue_script( 'mptbm_price_calculation', MPTBM_PLUGIN_URL . '/assets/frontend/mptbm_price_calculation.js', array( 'jquery' ), time(), true );
 				do_action( 'mptbm_registration_enqueue' );
-				do_action( 'mptbm_frontend_script' );
+				do_action( 'mptbm_frontend_enqueue' );
 			}
 		}
 		new MPTBM_Frontend();
