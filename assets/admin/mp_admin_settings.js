@@ -14,7 +14,7 @@ function load_sortable_datepicker(parent, item) {
 	"use strict";
 	$(document).ready(function () {
 		$(".mpStyle .date_type").datepicker({
-			dateFormat: mptbm_date_format
+			dateFormat: mp_date_format
 		});
 		$('.ttbm_select2').select2({});
 		$('.field-select2-wrapper select').select2({});

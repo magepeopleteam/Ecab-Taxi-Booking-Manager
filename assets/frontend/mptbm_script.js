@@ -4,7 +4,7 @@ let mptbm_map_window;
 function mptbm_set_cookie_distance_duration(start_place = '', end_place = '') {
 	mptbm_map = new google.maps.Map(document.getElementById("mptbm_map_area"), {
 			mapTypeControl: false,
-			center: mptbm_lat_lng,
+			center: mp_lat_lng,
 			zoom: 15,
 		}
 	);
@@ -44,7 +44,7 @@ function mptbm_set_cookie_distance_duration(start_place = '', end_place = '') {
 		let place = start_place ? start_place : end_place;
 		mptbm_map_window = new google.maps.InfoWindow();
 		map = new google.maps.Map(document.getElementById("mptbm_map_area"), {
-			center: mptbm_lat_lng,
+			center: mp_lat_lng,
 			zoom: 15,
 		});
 		const request = {
@@ -87,11 +87,11 @@ function createMarker(place) {
 			if ($('#mptbm_map_start_place').length > 0 && $('#mptbm_map_end_place').length > 0) {
 				let start_place = document.getElementById('mptbm_map_start_place');
 				let end_place = document.getElementById('mptbm_map_end_place');
-				let start_place_autoload = new google.maps.places.Autocomplete(start_place, mptbm_map_options);
+				let start_place_autoload = new google.maps.places.Autocomplete(start_place, mp_map_options);
 				google.maps.event.addListener(start_place_autoload, 'place_changed', function () {
 					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 				});
-				let end_place_autoload = new google.maps.places.Autocomplete(end_place, mptbm_map_options);
+				let end_place_autoload = new google.maps.places.Autocomplete(end_place, mp_map_options);
 				google.maps.event.addListener(end_place_autoload, 'place_changed', function () {
 					mptbm_set_cookie_distance_duration(start_place.value, end_place.value);
 				});
@@ -127,7 +127,7 @@ function createMarker(place) {
 			if (start_place.value && end_place.value && start_date && start_time) {
 				$.ajax({
 					type: 'POST',
-					url: mptbm_ajax_url,
+					url: mp_ajax_url,
 					data: {
 						"action": "get_mptbm_map_search_result",
 						"start_place": start_place.value,
@@ -162,7 +162,7 @@ function createMarker(place) {
 				let post_id = $('[name="mptbm_filter_post_id"]').val();
 				$.ajax({
 					type: 'POST',
-					url: mptbm_ajax_url,
+					url: mp_ajax_url,
 					data: {
 						"action": "get_mptbm_end_place",
 						"start_place": start_place,
@@ -205,7 +205,7 @@ function createMarker(place) {
 (function ($) {
 	$(document).ready(function () {
 		$(".mpStyle .date_type").datepicker({
-			dateFormat: mptbm_date_format,
+			dateFormat: mp_date_format,
 			autoSize: true,
 			minDate: 0,
 			onSelect: function (dateString, data) {
